@@ -1,0 +1,32 @@
+{
+  "type": "datasource",
+  "name": "huya",
+  "id": "huya",
+
+  "info": {
+    "description": "Huya Data Source for Grafana",
+    "author": {
+      "name": "chenyi1",
+      "url": "http://www.huya.com"
+    },
+    "keywords": ["huya", "opentsdb"],
+    "logos": {
+      "small": "img/opentsdb_logo.png",
+      "large": "img/opentsdb_logo.png"
+    },
+    "links": [
+      {"name": "Project site", "url": "https://github.com/funorpain/huya-datasource"},
+      {"name": "Apache License", "url": "https://github.com/funorpain/huya-datasource/blob/master/LICENSE"}
+    ],
+    "version": "1.0.0",
+    "updated": "2018-03-25"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "4.5.x",
+    "plugins": [ ]
+  },
+
+  "metrics": true,
+  "annotations": true
+}
