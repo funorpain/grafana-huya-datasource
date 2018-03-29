@@ -117,7 +117,7 @@ System.register(['angular', 'lodash', 'app/core/utils/datemath'], function(expor
                                 var firstData = lodash_1.default.find(avgData.dps, function (o) {
                                     return o !== null;
                                 });
-                                if (firstData === null) {
+                                if (firstData === undefined) {
                                     return;
                                 }
                                 result.push(this.transformMetricData(avgData, groupByTags, target, options, this.tsdbResolution));
@@ -266,13 +266,13 @@ System.register(['angular', 'lodash', 'app/core/utils/datemath'], function(expor
                     return this._get('/api/query', { start: start, end: end, m: m }).then(function (result) {
                         var tagvs = [];
                         lodash_1.default.each(result.data, function (r) {
-                            var index = lodash_1.default.find(r.dps, function (o) {
+                            var value = lodash_1.default.find(r.dps, function (o) {
                                 return o >= threshold;
                             });
-                            if (index !== -1) {
+                            if (value !== undefined) {
                                 if (tagvs.indexOf(r.tags[tag]) === -1) {
                                     tagvs.push({
-                                        text: r.tags[tag] + ' (' + r.dps[index] + ')',
+                                        text: r.tags[tag] + ' (' + value + ')',
                                         value: r.tags[tag],
                                     });
                                 }

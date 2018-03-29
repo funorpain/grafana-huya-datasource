@@ -141,7 +141,7 @@ export default class OpenTsDatasource {
                 var firstData = _.find(avgData.dps, function(o) {
                   return o !== null;
                 });
-                if (firstData === null) {
+                if (firstData === undefined) {
                   return;
                 }
 
@@ -322,13 +322,13 @@ export default class OpenTsDatasource {
     return this._get('/api/query', { start: start, end: end, m: m }).then(function(result) {
       var tagvs = [];
       _.each(result.data, function(r) {
-        var index = _.find(r.dps, function(o) {
+        var value = _.find(r.dps, function(o) {
           return o >= threshold;
         });
-        if (index !== -1) {
+        if (value !== undefined) {
           if (tagvs.indexOf(r.tags[tag]) === -1) {
             tagvs.push({
-              text: r.tags[tag] + ' (' + r.dps[index] + ')',
+              text: r.tags[tag] + ' (' + value + ')',
               value: r.tags[tag],
             });
           }
