@@ -274,10 +274,13 @@ System.register(['angular', 'lodash', 'app/core/utils/datemath'], function(expor
                                     tagvs.push({
                                         text: r.tags[tag] + ' (' + value + ')',
                                         value: r.tags[tag],
+                                        sortKey: value,
                                     });
                                 }
                             }
                         });
+                        tagvs = lodash_1.default.sortBy(tagvs, ['sortKey', 'text']);
+                        tagvs.reverse();
                         return tagvs;
                     });
                 };

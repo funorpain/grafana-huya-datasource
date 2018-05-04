@@ -330,10 +330,13 @@ export default class OpenTsDatasource {
             tagvs.push({
               text: r.tags[tag] + ' (' + value + ')',
               value: r.tags[tag],
+              sortKey: value,
             });
           }
         }
       });
+      tagvs = _.sortBy(tagvs, ['sortKey', 'text']);
+      tagvs.reverse();
       return tagvs;
     });
   }
