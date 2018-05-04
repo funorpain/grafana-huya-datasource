@@ -45,14 +45,14 @@ export default class OpenTsDatasource {
 
     _.each(
       options.targets,
-      function(target, index) {
+      function (target, index) {
         if (!target.metric) {
           return;
         }
         var query = this.convertTargetToQuery(target, options);
         if (query) {
-          _.each(query, function(item) {
-            var pos = _.findIndex(qs, function(o) {
+          _.each(query, function (item) {
+            var pos = _.findIndex(qs, function (o) {
               return _.isEqual(o, item);
             });
             if (pos === -1) {
@@ -76,13 +76,13 @@ export default class OpenTsDatasource {
     }
 
     var groupByTags = {};
-    _.each(queries, function(query) {
+    _.each(queries, function (query) {
       if (query.filters && query.filters.length > 0) {
-        _.each(query.filters, function(val) {
+        _.each(query.filters, function (val) {
           groupByTags[val.tagk] = true;
         });
       } else {
-        _.each(query.tags, function(val, key) {
+        _.each(query.tags, function (val, key) {
           groupByTags[key] = true;
         });
       }
@@ -91,18 +91,18 @@ export default class OpenTsDatasource {
     // console.log('queries', queries);
     // console.log('qsIndex', qsIndex);
     return this.performTimeSeriesQuery(queries, start, end).then(
-      function(response) {
+      function (response) {
         var metricToTargetMapping = this.mapMetricsToTargets(response.data, options);
         // console.log('response.data', response.data);
         // console.log('metricToTargetMapping', metricToTargetMapping);
         var result = [];
         _.each(
           response.data,
-          function(metricData, index) {
+          function (metricData, index) {
             var indexes = qsIndex[metricToTargetMapping[index]];
             _.each(
               indexes,
-              function(index) {
+              function (index) {
                 var target = options.targets[index],
                   metric = this.templateSrv.replace(target.metric, options.scopedVars, 'pipe'),
                   avg = metric.endsWith('_avg');
@@ -123,7 +123,7 @@ export default class OpenTsDatasource {
                 var sumList = [];
                 _.each(
                   response.data,
-                  function(refData, refIndex) {
+                  function (refData, refIndex) {
                     if (
                       refData.metric.endsWith('_sum') &&
                       qsIndex[metricToTargetMapping[refIndex]].indexOf(index) !== -1 &&
@@ -138,7 +138,7 @@ export default class OpenTsDatasource {
                 }
                 this.processMetricData(avgData, sumList, target, options);
 
-                var firstData = _.find(avgData.dps, function(o) {
+                var firstData = _.find(avgData.dps, function (o) {
                   return o !== null;
                 });
                 if (firstData === undefined) {
@@ -176,14 +176,14 @@ export default class OpenTsDatasource {
     var queries = _.compact(qs);
 
     return this.performTimeSeriesQuery(queries, start, end).then(
-      function(results) {
+      function (results) {
         if (results.data[0]) {
           var annotationObject = results.data[0].annotations;
           if (options.annotation.isGlobal) {
             annotationObject = results.data[0].globalAnnotations;
           }
           if (annotationObject) {
-            _.each(annotationObject, function(annotation) {
+            _.each(annotationObject, function (annotation) {
               var event = {
                 text: annotation.description,
                 time: Math.floor(annotation.startTime) * 1000,
@@ -253,7 +253,7 @@ export default class OpenTsDatasource {
 
   _saveTagKeys(metricData) {
     var tagKeys = Object.keys(metricData.tags);
-    _.each(metricData.aggregateTags, function(tag) {
+    _.each(metricData.aggregateTags, function (tag) {
       tagKeys.push(tag);
     });
 
@@ -261,7 +261,7 @@ export default class OpenTsDatasource {
   }
 
   _performSuggestQuery(query, type) {
-    return this._get('/api/suggest', { type: type, q: query, max: 1000 }).then(function(result) {
+    return this._get('/api/suggest', { type: type, q: query, max: 1000 }).then(function (result) {
       return result.data;
     });
   }
@@ -271,7 +271,7 @@ export default class OpenTsDatasource {
       return this.$q.when([]);
     }
 
-    var keysArray = keys.split(',').map(function(key) {
+    var keysArray = keys.split(',').map(function (key) {
       return key.trim();
     });
     var key = keysArray[0];
@@ -283,10 +283,10 @@ export default class OpenTsDatasource {
 
     var m = metric + '{' + keysQuery + '}';
 
-    return this._get('/api/search/lookup', { m: m, limit: 3000 }).then(function(result) {
+    return this._get('/api/search/lookup', { m: m, limit: 3000 }).then(function (result) {
       result = result.data.results;
       var tagvs = [];
-      _.each(result, function(r) {
+      _.each(result, function (r) {
         if (tagvs.indexOf(r.tags[key]) === -1) {
           tagvs.push(r.tags[key]);
         }
@@ -300,11 +300,11 @@ export default class OpenTsDatasource {
       return this.$q.when([]);
     }
 
-    return this._get('/api/search/lookup', { m: metric, limit: 1000 }).then(function(result) {
+    return this._get('/api/search/lookup', { m: metric, limit: 1000 }).then(function (result) {
       result = result.data.results;
       var tagks = [];
-      _.each(result, function(r) {
-        _.each(r.tags, function(tagv, tagk) {
+      _.each(result, function (r) {
+        _.each(r.tags, function (tagv, tagk) {
           if (tagks.indexOf(tagk) === -1) {
             tagks.push(tagk);
           }
@@ -319,10 +319,10 @@ export default class OpenTsDatasource {
       return this.$q.when([]);
     }
 
-    return this._get('/api/query', { start: start, end: end, m: m }).then(function(result) {
+    return this._get('/api/query', { start: start, end: end, m: m }).then(function (result) {
       var tagvs = [];
-      _.each(result.data, function(r) {
-        var value = _.find(r.dps, function(o) {
+      _.each(result.data, function (r) {
+        var value = _.find(r.dps, function (o) {
           return o >= threshold;
         });
         if (value !== undefined) {
@@ -357,9 +357,9 @@ export default class OpenTsDatasource {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       })
-      .then(function(result) {
+      .then(function (result) {
         if (result.data && _.isObject(result.data.data) && !_.isArray(result.data.data)) {
-          return _.map(result.data.data, function(value, key) {
+          return _.map(result.data.data, function (value, key) {
             return {
               text: value,
               value: key,
@@ -391,8 +391,8 @@ export default class OpenTsDatasource {
       return this.$q.reject(err);
     }
 
-    var responseTransform = function(result) {
-      return _.map(result, function(value) {
+    var responseTransform = function (result) {
+      return _.map(result, function (value) {
         return { text: value };
       });
     };
@@ -450,7 +450,7 @@ export default class OpenTsDatasource {
   }
 
   testDatasource() {
-    return this._performSuggestQuery('cpu', 'metrics').then(function() {
+    return this._performSuggestQuery('cpu', 'metrics').then(function () {
       return { status: 'success', message: 'Data source is working' };
     });
   }
@@ -460,7 +460,7 @@ export default class OpenTsDatasource {
       return this.aggregatorsPromise;
     }
 
-    this.aggregatorsPromise = this._get('/api/aggregators').then(function(result) {
+    this.aggregatorsPromise = this._get('/api/aggregators').then(function (result) {
       if (result.data && _.isArray(result.data)) {
         return result.data.sort();
       }
@@ -474,7 +474,7 @@ export default class OpenTsDatasource {
       return this.filterTypesPromise;
     }
 
-    this.filterTypesPromise = this._get('/api/config/filters').then(function(result) {
+    this.filterTypesPromise = this._get('/api/config/filters').then(function (result) {
       if (result.data) {
         return Object.keys(result.data).sort();
       }
@@ -487,7 +487,7 @@ export default class OpenTsDatasource {
     var dps = {};
     var threshold = target.threshold ? this.templateSrv.replace(target.threshold, options.scopedVars, 'pipe') : 0;
 
-    _.each(metricData.dps, function(value, key) {
+    _.each(metricData.dps, function (value, key) {
       if (value >= threshold && value > 0) {
         var sum = 0;
         for (var i = 0, n = refData.length; i < n; i++) {
@@ -511,7 +511,7 @@ export default class OpenTsDatasource {
 
     // TSDB returns datapoints has a hash of ts => value.
     // Can't use _.pairs(invert()) because it stringifies keys/values
-    _.each(md.dps, function(v, k) {
+    _.each(md.dps, function (v, k) {
       if (tsdbResolution === 2) {
         dps.push([v, k * 1]);
       } else {
@@ -525,7 +525,7 @@ export default class OpenTsDatasource {
   createMetricLabel(md, target, groupByTags, options) {
     if (target.alias) {
       var scopedVars = _.clone(options.scopedVars || {});
-      _.each(md.tags, function(value, key) {
+      _.each(md.tags, function (value, key) {
         scopedVars['tag_' + key] = { value: value };
       });
       return this.templateSrv.replace(target.alias, scopedVars);
@@ -535,7 +535,7 @@ export default class OpenTsDatasource {
     var tagData = [];
 
     if (!_.isEmpty(md.tags)) {
-      _.each(_.toPairs(md.tags), function(tag) {
+      _.each(_.toPairs(md.tags), function (tag) {
         if (_.has(groupByTags, tag[0])) {
           tagData.push(tag[0] + '=' + tag[1]);
         }
@@ -618,7 +618,7 @@ export default class OpenTsDatasource {
   }
 
   mapMetricsToTargets(metrics, options) {
-    return _.map(metrics, function(metricData) {
+    return _.map(metrics, function (metricData) {
       return metricData.query.index;
     });
   }
