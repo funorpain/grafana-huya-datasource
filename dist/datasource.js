@@ -465,7 +465,7 @@ System.register(['angular', 'lodash', 'app/core/utils/datemath'], function(expor
                     }
                     var query = {
                         metric: this.templateSrv.replace(target.metric, options.scopedVars, 'pipe'),
-                        aggregator: 'sum',
+                        aggregator: target.aggregator || 'sum',
                     };
                     if (!query.metric.match(/_(sum|cnt|avg)$/)) {
                         return null;
@@ -476,7 +476,7 @@ System.register(['angular', 'lodash', 'app/core/utils/datemath'], function(expor
                         if (interval.match(/\.[0-9]+s/)) {
                             interval = parseFloat(interval) * 1000 + 'ms';
                         }
-                        query.downsample = interval + '-' + 'sum';
+                        query.downsample = interval + '-' + query.aggregator;
                         query.downsample += '-' + 'null';
                     }
                     if (target.filters && target.filters.length > 0) {

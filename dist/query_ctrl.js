@@ -26,6 +26,7 @@ System.register(['lodash', 'app/core/utils/kbn', 'app/plugins/sdk'], function(ex
                     var _this = this;
                     _super.call(this, $scope, $injector);
                     this.errors = this.validateTarget();
+                    this.aggregators = ['sum', 'zimsum'];
                     this.fillPolicies = ['none', 'nan', 'null', 'zero'];
                     this.filterTypes = [
                         'wildcard',
@@ -37,6 +38,9 @@ System.register(['lodash', 'app/core/utils/kbn', 'app/plugins/sdk'], function(ex
                         'regexp',
                     ];
                     this.tsdbVersion = this.datasource.tsdbVersion;
+                    if (!this.target.aggregator) {
+                        this.target.aggregator = 'sum';
+                    }
                     this.datasource.getFilterTypes().then(function (filterTypes) {
                         if (filterTypes.length !== 0) {
                             _this.filterTypes = filterTypes;

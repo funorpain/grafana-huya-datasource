@@ -2,9 +2,11 @@
 import { QueryCtrl } from 'app/plugins/sdk';
 export declare class OpenTsQueryCtrl extends QueryCtrl {
     static templateUrl: string;
+    aggregators: any;
     fillPolicies: any;
     filterTypes: any;
     tsdbVersion: any;
+    aggregator: any;
     downsampleInterval: any;
     errors: any;
     suggestMetrics: any;

@@ -6,9 +6,11 @@ import { QueryCtrl } from 'app/plugins/sdk';
 
 export class OpenTsQueryCtrl extends QueryCtrl {
   static templateUrl = 'partials/query.editor.html';
+  aggregators: any;
   fillPolicies: any;
   filterTypes: any;
   tsdbVersion: any;
+  aggregator: any;
   downsampleInterval: any;
   errors: any;
   suggestMetrics: any;
@@ -22,6 +24,7 @@ export class OpenTsQueryCtrl extends QueryCtrl {
     super($scope, $injector);
 
     this.errors = this.validateTarget();
+    this.aggregators = ['sum', 'zimsum'];
     this.fillPolicies = ['none', 'nan', 'null', 'zero'];
     this.filterTypes = [
       'wildcard',
@@ -34,6 +37,10 @@ export class OpenTsQueryCtrl extends QueryCtrl {
     ];
 
     this.tsdbVersion = this.datasource.tsdbVersion;
+
+    if (!this.target.aggregator) {
+      this.target.aggregator = 'sum';
+    }
 
     this.datasource.getFilterTypes().then(filterTypes => {
       if (filterTypes.length !== 0) {
